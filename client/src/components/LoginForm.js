@@ -17,11 +17,15 @@ function LoginForm({ onLogin }) {
       },
       body: JSON.stringify({ username, password }),
     }).then((r) => {
+      console.log(r.ok)
       setIsLoading(false);
       if (r.ok) {
         r.json().then((user) => onLogin(user));
       } else {
-        r.json().then((err) => setErrors(err.errors));
+        r.json().then((err) => {
+          debugger
+          setErrors(err.errors)
+        });
       }
     });
   }
