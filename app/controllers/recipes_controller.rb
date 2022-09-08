@@ -11,12 +11,15 @@ class RecipesController < ApplicationController
 
     def create
         if session[:user_id]
-        recipe = Recipe.create(recipe_params)
-        render json: recipe, status: :created
-        # elsif !recipe.valid?
-        #     render json: { errors: recipe.errors.full_messages }, status: :unprocessable_entity
-        # else
-            # render json: { errors: ["No user logged in"] }, status: :unauthorized
+            user = User.find(session[:user_id])
+            recipe = user.recipes.create(recipe_params)
+            if recipe.invalid?
+                render json: { errors: recipe.errors.full_messages }, status: :unprocessable_entity
+            else
+                render json: recipe, include: :user, status: :created
+            end
+        else
+            render json: { errors: ["No user logged in"] }, status: :unauthorized
         end
     end
 
